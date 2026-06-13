@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:5000";
+const BASE_URL = "https://smart-campus-backend-f67k.onrender.com";
 
 // Helper (safe fetch)
 async function safeFetch(url, options = {}) {
