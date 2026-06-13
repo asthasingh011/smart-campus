@@ -51,7 +51,7 @@ app.post("/book", (req, res) => {
     }
 
     const sql = `
-        INSERT INTO Booking 
+        INSERT INTO booking 
         (User_ID, Resource_ID, booking_date, start_time, end_time, purpose, Status)
         VALUES (?, ?, ?, ?, ?, ?, 'Pending')
     `;
@@ -80,7 +80,7 @@ app.post("/signup", (req, res) => {
 
     const defaultRole = Role || 'Student';
 
-    const checkSql = "SELECT * FROM `User` WHERE Email = ?";
+    const checkSql = "SELECT * FROM `user` WHERE Email = ?";
     console.log(`Executing query: ${checkSql} with [${Email}]`);
     db.query(checkSql, [Email], (err, result) => {
         if (err) {
@@ -93,7 +93,7 @@ app.post("/signup", (req, res) => {
             return res.status(409).json({ error: "User already exists with this email." });
         }
 
-        const insertSql = "INSERT INTO `User` (Name, Email, Password, Role) VALUES (?, ?, ?, ?)";
+        const insertSql = "INSERT INTO `user` (Name, Email, Password, Role) VALUES (?, ?, ?, ?)";
         console.log(`Executing query: ${insertSql} with [${Name}, ${Email}, ***, ${defaultRole}]`);
         db.query(insertSql, [Name, Email, Password, defaultRole], (err2, result2) => {
             if (err2) {
@@ -122,7 +122,7 @@ app.post("/login", (req, res) => {
     const email = req.body.email || req.body.Email;
     const password = req.body.password || req.body.Password;
 
-    const sql = "SELECT * FROM `User` WHERE Email = ? AND Password = ?";
+    const sql = "SELECT * FROM `user` WHERE Email = ? AND Password = ?";
 
     db.query(sql, [email, password], (err, result) => {
         if (err) {
@@ -147,7 +147,7 @@ app.post("/approve", (req, res) => {
     console.log("BODY:", req.body);
 
     const updateSql = `
-        UPDATE Booking 
+        UPDATE booking 
         SET Status = 'Approved'
         WHERE Booking_ID = ?
     `;
@@ -159,7 +159,7 @@ app.post("/approve", (req, res) => {
         }
 
         const insertSql = `
-            INSERT INTO Approval 
+            INSERT INTO approval 
             (Booking_ID, Admin_ID, Approval_Status, Approval_Date, Remarks)
             VALUES (?, ?, 'Approved', CURDATE(), 'Approved by admin')
         `;
@@ -338,7 +338,7 @@ app.post("/maintenance", (req, res) => {
     const { Resource_ID, Issue_Description, Reported_Date, Status } = req.body;
 
     const sql = `
-        INSERT INTO Maintenance 
+        INSERT INTO maintenance 
         (Resource_ID, Issue_Description, Reported_Date, Status)
         VALUES (?, ?, ?, ?)
     `;
@@ -357,7 +357,7 @@ app.post("/notification", (req, res) => {
     const { User_ID, Message, Date_Sent, Status } = req.body;
 
     const sql = `
-        INSERT INTO Notification
+        INSERT INTO notification
         (User_ID, Message, Date_Sent, Status)
         VALUES (?, ?, ?, ?)
     `;
@@ -503,6 +503,7 @@ app.get("/analytics", (req, res) => {
 });
 
 // ▶️ START SERVER
-app.listen(5000, () => {
-    console.log("Server running on port 5000 🚀");
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT} 🚀`);
 });

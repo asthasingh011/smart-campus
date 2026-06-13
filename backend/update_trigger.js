@@ -13,7 +13,7 @@ AFTER UPDATE ON booking
 FOR EACH ROW 
 BEGIN 
   IF NEW.Status = 'Approved' THEN 
-    INSERT INTO Notification(User_ID, Message, Date_Sent, Status) 
+    INSERT INTO notification(User_ID, Message, Date_Sent, Status) 
     VALUES(NEW.User_ID, CONCAT('Your booking #', NEW.Booking_ID, ' has been approved'), CURDATE(), 'Unread'); 
   END IF; 
 END;

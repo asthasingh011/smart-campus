@@ -7,7 +7,7 @@ const db = mysql.createConnection({
     database: "smart_campus"
 });
 
-db.query("SELECT * FROM User", (err, results) => {
+db.query("SELECT * FROM user", (err, results) => {
     if (err) console.error(err);
     else console.log(JSON.stringify(results, null, 2));
     process.exit();
