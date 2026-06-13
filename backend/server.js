@@ -33,7 +33,7 @@ app.get("/", (req, res) => {
 
 // 📊 GET ALL RESOURCES
 app.get("/resources", (req, res) => {
-    db.query("SELECT * FROM Resource", (err, result) => {
+    db.query("SELECT * FROM resource", (err, result) => {
         if (err) return res.send(err);
         res.send(result);
     });
