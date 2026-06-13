@@ -1,0 +1,78 @@
+// 🔹 IMPORTS (API + Routing)
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import {
+getResources,
+getResourceTypes,
+getMyBookings,
+getNotifications,
+getAnalytics,
+} from '../../services/api'
+
+// 🔹 STATE MANAGEMENT
+const [user, setUser] = useState(null)
+const [resources, setResources] = useState([])
+const [resourceTypes, setResourceTypes] = useState([])
+const [myBookings, setMyBookings] = useState([])
+const [notifications, setNotifications] = useState([])
+const [analytics, setAnalytics] = useState(null)
+
+// 🔹 AUTHENTICATION CHECK
+useEffect(() => {
+const stored = localStorage.getItem('campus_user')
+if (!stored) {
+router.replace('/login')
+return
+}
+const u = JSON.parse(stored)
+setUser(u)
+}, [])
+
+// 🔹 FETCH RESOURCES
+useEffect(() => {
+if (!user) return
+Promise.all([getResources(), getResourceTypes()])
+.then(([res, types]) => {
+setResources(res)
+setResourceTypes(types)
+})
+}, [user])
+
+// 🔹 FETCH USER BOOKINGS
+useEffect(() => {
+if (!user) return
+getMyBookings(user.User_ID).then(data => {
+setMyBookings(data)
+})
+}, [user])
+
+// 🔹 FETCH NOTIFICATIONS
+useEffect(() => {
+if (!user) return
+getNotifications(user.User_ID).then(data => {
+setNotifications(data)
+})
+}, [user])
+
+// 🔹 FETCH ANALYTICS
+useEffect(() => {
+if (!user) return
+getAnalytics(user.User_ID, user.Role).then(data => {
+setAnalytics(data)
+})
+}, [user])
+
+// 🔹 FILTER LOGIC (RESOURCES)
+const filteredResources = resources.filter(r => {
+return r.Status === 'Available'
+})
+
+// 🔹 BOOKING DATA DISPLAY FORMAT
+const bookingColumns = [
+{ key: 'resource', label: 'RESOURCE' },
+{ key: 'date', label: 'DATE' },
+{ key: 'start', label: 'START' },
+{ key: 'end', label: 'END' },
+{ key: 'status', label: 'STATUS' },
+{ key: 'purpose', label: 'PURPOSE' }
+]
